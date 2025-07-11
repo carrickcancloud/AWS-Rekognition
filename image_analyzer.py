@@ -17,28 +17,28 @@ IMAGES_FOLDER = 'images/'
 BRANCH = os.getenv('GITHUB_REF', 'refs/heads/main').split('/')[-1]  # Extract branch name
 
 # Initialize boto3 clients
-s3 = boto3.client('s3')
-rekognition = boto3.client('rekognition', region_name=REGION)
-dynamodb = boto3.client('dynamodb', region_name=REGION)
+s3_client = boto3.client('s3')
+rekognition_client = boto3.client('rekognition', region_name=REGION)
+dynamodb_client = boto3.client('dynamodb', region_name=REGION)
 
-def upload_image_to_s3(uits_image_path: str) -> bool:
+def upload_image_to_s3(image_path: str) -> bool:
     """Uploads an image to the specified S3 bucket.
 
     Args:
-        uits_image_path (str): The path of the image to upload.
+        image_path (str): The path of the image to upload.
 
     Returns:
         bool: True if the upload was successful, False otherwise.
     """
     try:
-        s3.upload_file(
-            Filename=uits_image_path,
+        s3_client.upload_file(
+            Filename=image_path,
             Bucket=BUCKET,
-            Key=f"{PREFIX}{os.path.basename(uits_image_path)}"
+            Key=f"{PREFIX}{os.path.basename(image_path)}"
         )
         return True
     except ClientError as e:
-        print(f"Error uploading {uits_image_path} to S3: {e}")
+        print(f"Error uploading {image_path} to S3: {e}")
         return False
 
 def analyze_image_using_rekognition(image_name: str) -> tuple[List[Dict[str, Any]], Any]:
@@ -51,7 +51,7 @@ def analyze_image_using_rekognition(image_name: str) -> tuple[List[Dict[str, Any
         List[Dict[str, Any]]: A list of labels and their confidence scores.
     """
     try:
-        response = rekognition.detect_labels(
+        response = rekognition_client.detect_labels(
             Image={
                 'S3Object': {
                     'Bucket': BUCKET,
@@ -81,7 +81,7 @@ def store_results_in_dynamodb(image_name: str, labels: List[Dict[str, Any]], tim
             for label in labels
         ]
 
-        dynamodb.put_item(
+        dynamodb_client.put_item(
             TableName=DYNAMODB,
             Item={
                 'filename': {'S': image_name},
