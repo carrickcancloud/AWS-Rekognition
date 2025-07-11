@@ -9,12 +9,12 @@ for key, value in os.environ.items():
     print(f"{key}: {value}")
 
 # Constants for AWS Rekognition analysis
-REGION = 'us-east-1'
-BUCKET = 'acmelabs-image-analyzer'
-DYNAMODB = 'AcmeLabs-Image-Analyzer-Beta-Results'
+REGION = os.getenv('AWS_REGION', 'us-east-1')  # Default to 'us-east-1' if not set
+BUCKET = os.getenv('S3_BUCKET', 'default-bucket')  # Default bucket name
+DYNAMODB_TABLE = os.getenv('DYNAMODB_TABLE')  # This will be set in the workflow
 PREFIX = 'rekognition-input/'
 IMAGES_FOLDER = 'images/'
-BRANCH = 'test'
+BRANCH = os.getenv('GITHUB_REF', 'refs/heads/main').split('/')[-1]  # Extract branch name
 
 # Initialize boto3 clients
 s3 = boto3.client('s3')
