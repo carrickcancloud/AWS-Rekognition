@@ -11,7 +11,7 @@ for key, value in os.environ.items():
 # Constants for AWS Rekognition analysis
 REGION = os.getenv('AWS_REGION', 'us-east-1')  # Default to 'us-east-1' if not set
 BUCKET = os.getenv('S3_BUCKET', 'default-bucket')  # Default bucket name
-DYNAMODB_TABLE = os.getenv('DYNAMODB_TABLE')  # This will be set in the workflow
+DYNAMODB = os.getenv('DYNAMODB_TABLE')  # This will be set in the workflow
 PREFIX = 'rekognition-input/'
 IMAGES_FOLDER = 'images/'
 BRANCH = os.getenv('GITHUB_REF', 'refs/heads/main').split('/')[-1]  # Extract branch name
