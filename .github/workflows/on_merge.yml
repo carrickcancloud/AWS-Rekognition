@@ -34,7 +34,7 @@ jobs:
 
       - name: Run analysis & Upload results to DynamoDB (Prod)
         env:
-          s3-bucket: ${{ secrets.S3_BUCKET }}
-          dynamodb_table: ${{ secrets.DYNAMODB_PROD }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          DYNAMODB_TABLE: ${{ secrets.DYNAMODB_PROD }}
         run: |
           python image_analyzer.py
